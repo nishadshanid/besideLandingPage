@@ -41,9 +41,11 @@ export const hero = {
   headlinePost: "Learners",
   subcopy:
     "Personalised tuition for classes 6 to 12 across CBSE, ICSE, IGCSE, IB, NIOS, A-Level and O-Level — right here in Palarivattom, Kochi.",
-  // TODO: drop the real photo at public/teachers.png (or .jpg) and set this path.
-  // Until then a styled placeholder slot is shown.
-  teachersImage: null,
+  // Transparent PNG cutouts of the two lead tutors (public/tutors/)
+  tutors: [
+    { src: "/tutors/tutor-1.png", alt: "Beside Learning lead tutor" },
+    { src: "/tutors/tutor-2.png", alt: "Beside Learning lead tutor" },
+  ],
   teachersCaption: "Our lead mentors", // shown under the photo
 }
 
@@ -151,10 +153,11 @@ export const aboutPage = {
   },
   mentors: {
     heading: "Meet Our Lead Mentors",
-    sub: "The two faces every Beside student knows — photos coming soon.",
+    sub: "The two faces every Beside student knows.",
     people: [
-      { name: "Lead Mentor 1", role: "TODO: name & subjects", photo: null },
-      { name: "Lead Mentor 2", role: "TODO: name & subjects", photo: null },
+      // TODO: real names & subjects
+      { name: "Lead Mentor 1", role: "Name & subjects coming soon", photo: "/tutors/tutor-1.png" },
+      { name: "Lead Mentor 2", role: "Name & subjects coming soon", photo: "/tutors/tutor-2.png" },
     ],
   },
 }

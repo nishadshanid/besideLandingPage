@@ -8,24 +8,72 @@ function WhatsAppIcon({ className }) {
   )
 }
 
-/* Styled slot shown until the real teachers' photo is dropped in */
-function TeachersPlaceholder() {
+/* The two lead tutors (transparent cutouts) rising out of a brand blob */
+function TutorShowcase() {
+  const [left, right] = hero.tutors
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-brand-100 via-brand-50 to-white">
-      {/* two avatar silhouettes */}
-      <div className="flex items-end -space-x-6">
-        {[0, 1].map((i) => (
-          <div key={i} className={i === 0 ? 'z-10' : 'scale-90 opacity-80'}>
-            <svg width="110" height="120" viewBox="0 0 110 120" fill="none" aria-hidden="true">
-              <circle cx="55" cy="38" r="24" className="fill-brand-200" />
-              <path d="M10 120c0-25 20-40 45-40s45 15 45 40" className="fill-brand-200" />
-            </svg>
-          </div>
-        ))}
+    <div className="relative mx-auto w-full max-w-md pt-10 lg:max-w-lg">
+      {/* organic gradient blob behind the tutors */}
+      <svg
+        className="absolute bottom-2 left-1/2 h-[72%] w-[104%] -translate-x-1/2"
+        viewBox="0 0 520 420"
+        preserveAspectRatio="none"
+        fill="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="tutor-blob" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--color-brand-600)" />
+            <stop offset="55%" stopColor="var(--color-brand-700)" />
+            <stop offset="100%" stopColor="var(--color-brand-800)" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M96 51C161-9 300-14 385 32c62 34 105 96 115 163 9 62-6 132-56 172-53 42-131 44-201 38-71-6-141-21-186-70C13 287 1 216 22 156 40 105 57 87 96 51Z"
+          fill="url(#tutor-blob)"
+        />
+        {/* subtle texture rings */}
+        <circle cx="430" cy="80" r="55" stroke="white" strokeOpacity="0.14" strokeWidth="2" strokeDasharray="6 8" />
+        <circle cx="70" cy="330" r="42" stroke="white" strokeOpacity="0.12" strokeWidth="2" />
+      </svg>
+
+      {/* tutors — bottom-anchored, heads overflowing the blob */}
+      <div className="relative z-10 flex items-end justify-center">
+        <img
+          src={left.src}
+          alt={left.alt}
+          className="-mr-10 w-[44%] drop-shadow-[0_20px_30px_rgba(46,14,72,0.45)] sm:-mr-12"
+          draggable="false"
+        />
+        <img
+          src={right.src}
+          alt={right.alt}
+          className="w-[52%] drop-shadow-[0_20px_30px_rgba(46,14,72,0.45)]"
+          draggable="false"
+        />
       </div>
-      <p className="px-6 text-center text-sm font-medium text-brand-400">
-        Lead teachers&rsquo; photo — coming soon
-      </p>
+
+      {/* floating badge */}
+      <div className="absolute top-2 -left-2 z-20 flex items-center gap-2.5 rounded-2xl bg-white/95 px-4 py-3 shadow-xl shadow-brand-900/15 backdrop-blur sm:left-0">
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-400/20">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-accent-600)" aria-hidden="true">
+            <path d="M12 3 1 8l11 5 9-4.09V14h2V8L12 3Z" />
+            <path d="M5 11.5V16c0 1.5 3.1 3 7 3s7-1.5 7-3v-4.5l-7 3.2-7-3.2Z" />
+          </svg>
+        </span>
+        <div>
+          <div className="text-xs font-bold text-brand-900">Classes 6–12</div>
+          <div className="text-[11px] font-medium text-gray-500">All boards, one roof</div>
+        </div>
+      </div>
+
+      {/* caption pill overlapping the blob's bottom edge */}
+      <div className="absolute -bottom-1 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-white px-5 py-2.5 shadow-lg shadow-brand-900/15">
+        <span className="h-2 w-2 rounded-full bg-accent-500" />
+        <span className="text-xs font-semibold whitespace-nowrap text-brand-800">
+          {hero.teachersCaption}
+        </span>
+      </div>
     </div>
   )
 }
@@ -103,38 +151,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Right: teachers' photo slot ── */}
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            {/* purple blob behind the frame */}
-            <svg
-              className="absolute -top-8 left-1/2 w-[115%] -translate-x-1/2 text-brand-200/70"
-              viewBox="0 0 200 200"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M44 21c17-13 44-15 63-6 19 8 30 27 37 47 8 20 12 41 3 56-8 15-30 24-51 27-22 3-44 0-59-12S14 100 12 79c-1-21 14-45 32-58Z" />
-            </svg>
-
-            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl border-4 border-white shadow-2xl shadow-brand-900/20">
-              {hero.teachersImage ? (
-                <img
-                  src={hero.teachersImage}
-                  alt="Beside Learning lead teachers"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <TeachersPlaceholder />
-              )}
-            </div>
-
-            {/* caption card */}
-            <div className="absolute -bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-white px-5 py-2.5 shadow-lg shadow-brand-900/10">
-              <span className="h-2 w-2 rounded-full bg-accent-500" />
-              <span className="text-xs font-semibold whitespace-nowrap text-brand-800">
-                {hero.teachersCaption}
-              </span>
-            </div>
-          </div>
+          {/* ── Right: lead tutors showcase ── */}
+          <TutorShowcase />
         </div>
 
         {/* ── Stats strip ── */}

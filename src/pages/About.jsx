@@ -2,24 +2,29 @@ import { aboutPage, boards, brand, contact } from '../data/content.js'
 
 function MentorCard({ person }) {
   return (
-    <div className="overflow-hidden rounded-3xl border border-brand-100 bg-white shadow-sm">
-      <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-100 via-brand-50 to-white">
-        {person.photo ? (
-          <img src={person.photo} alt={person.name} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-3">
-            <svg width="90" height="98" viewBox="0 0 110 120" fill="none" aria-hidden="true">
-              <circle cx="55" cy="38" r="24" className="fill-brand-200" />
-              <path d="M10 120c0-25 20-40 45-40s45 15 45 40" className="fill-brand-200" />
-            </svg>
-            <span className="text-xs font-medium text-brand-400">Photo coming soon</span>
-          </div>
-        )}
+    <div className="group text-center">
+      {/* cutout rising out of a gradient circle */}
+      <div className="relative mx-auto w-64 max-w-full pt-12">
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 aspect-square rounded-full bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 shadow-xl shadow-brand-900/20 transition group-hover:shadow-2xl group-hover:shadow-brand-900/30"
+        />
+        {/* dashed accent ring */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-3 bottom-3 aspect-square rounded-full border-2 border-dashed border-white/20"
+        />
+        <div className="relative overflow-hidden rounded-b-full pb-0">
+          <img
+            src={person.photo}
+            alt={person.name}
+            draggable="false"
+            className="relative z-10 mx-auto h-72 w-auto drop-shadow-[0_16px_24px_rgba(46,14,72,0.4)] transition duration-300 group-hover:scale-[1.04]"
+          />
+        </div>
       </div>
-      <div className="p-6 text-center">
-        <h3 className="text-base font-semibold text-brand-900">{person.name}</h3>
-        <p className="mt-1 text-sm text-gray-500">{person.role}</p>
-      </div>
+      <h3 className="mt-5 text-base font-semibold text-brand-900">{person.name}</h3>
+      <p className="mt-1 text-sm text-gray-500">{person.role}</p>
     </div>
   )
 }
