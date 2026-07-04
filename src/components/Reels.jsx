@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { reels } from '../data/content.js'
 
 // "https://www.instagram.com/reel/ABC123/?igsh=x" -> "https://www.instagram.com/reel/ABC123/embed/"
@@ -54,9 +55,28 @@ function ReelCard({ url, index }) {
 
 export default function Reels() {
   const vids = [...new Set(reels.videos)]
-  // render twice so the CSS marquee (-50% translate) loops seamlessly
-  const loop = [...vids, ...vids]
-  const duration = `${Math.max(vids.length * 7, 20)}s`
+
+  // One "set" must be wider than the viewport, otherwise translating by a
+  // set-width (the -50% loop) exposes blank track on wide screens. Repeat the
+  // reels enough times to always over-fill the widest expected screen, then
+  // render that set twice so the -50% translate loops seamlessly.
+  const [reps, setReps] = useState(3)
+  useEffect(() => {
+    const compute = () => {
+      const cardW = window.matchMedia('(min-width: 640px)').matches ? 208 + 16 : 176 + 16
+      const setW = vids.length * cardW
+      // one set (reps × unique) must be at least the viewport width so the
+      // -50% loop never exposes blank track; keep a small safety margin
+      setReps(Math.max(2, Math.ceil((window.innerWidth + 64) / setW)))
+    }
+    compute()
+    window.addEventListener('resize', compute)
+    return () => window.removeEventListener('resize', compute)
+  }, [vids.length])
+
+  const base = Array.from({ length: reps }, () => vids).flat()
+  const loop = [...base, ...base]
+  const duration = `${base.length * 7}s`
 
   return (
     <section id="reels" className="overflow-hidden bg-white">
