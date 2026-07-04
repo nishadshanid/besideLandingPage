@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { nav } from '../data/content.js'
+import { asset, nav } from '../data/content.js'
 
 function ThemeToggle({ className = '' }) {
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'))
@@ -63,8 +63,8 @@ export default function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
         {/* Logo */}
         <Link to="/" className="flex shrink-0 items-center" aria-label="Beside Learning — Home">
-          <img src="/logo-purple.png" alt="Beside" className="h-6 w-auto lg:h-8 dark:hidden" />
-          <img src="/logo-white.png" alt="Beside" className="hidden h-6 w-auto lg:h-8 dark:block" />
+          <img src={asset("/logo-purple.png")} alt="Beside" className="h-6 w-auto lg:h-8 dark:hidden" />
+          <img src={asset("/logo-white.png")} alt="Beside" className="hidden h-6 w-auto lg:h-8 dark:block" />
         </Link>
 
         {/* Desktop nav */}

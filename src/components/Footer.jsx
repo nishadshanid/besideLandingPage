@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { brand, contact, courses, nav } from '../data/content.js'
+import { asset, brand, contact, courses, nav } from '../data/content.js'
 
 function SocialLink({ href, label, children }) {
   return (
@@ -22,7 +22,7 @@ export default function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           {/* brand */}
           <div>
-            <img src="/logo-white.png" alt={brand.fullName} className="h-8 w-auto" />
+            <img src={asset("/logo-white.png")} alt={brand.fullName} className="h-8 w-auto" />
             <p className="mt-4 text-sm font-medium text-accent-400">{brand.tagline}</p>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-brand-200">
               A tuition centre in Palarivattom, Kochi for classes 6 to 12 — teaching CBSE, ICSE,

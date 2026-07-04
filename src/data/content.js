@@ -3,11 +3,15 @@
 // Swap placeholders (marked TODO) for real details any time.
 // ─────────────────────────────────────────────────────────────
 
+// Prefixes public/ asset paths with the deploy base (needed when the site
+// is served from a sub-path, e.g. GitHub Pages: /repo-name/).
+export const asset = (p) => import.meta.env.BASE_URL.replace(/\/$/, "") + p
+
 export const brand = {
   name: "Beside",
   fullName: "Beside Learning",
   tagline: "Beyond lectures, Beside learners",
-  logo: "/logo.png", // white wordmark on purple
+  logo: asset("/logo.png"), // white wordmark on purple
   address:
     "2nd Floor, Pratheeksha Building, Palarivattom, Kochi – 682025",
 }
@@ -48,14 +52,14 @@ export const hero = {
 // then list them here. Order in the array = order in the carousel.
 export const posters = {
   desktop: [
-    { src: "/posters/desktop/poster-1.jpg", alt: "Beside Learning announcement 1" },
-    { src: "/posters/desktop/poster-2.jpg", alt: "Beside Learning announcement 2" },
-    { src: "/posters/desktop/poster-3.jpg", alt: "Beside Learning announcement 3" },
+    { src: asset("/posters/desktop/poster-1.jpg"), alt: "Beside Learning announcement 1" },
+    { src: asset("/posters/desktop/poster-2.jpg"), alt: "Beside Learning announcement 2" },
+    { src: asset("/posters/desktop/poster-3.jpg"), alt: "Beside Learning announcement 3" },
   ],
   mobile: [
-    { src: "/posters/mobile/poster-1.jpg", alt: "Beside Learning announcement 1" },
-    { src: "/posters/mobile/poster-2.jpg", alt: "Beside Learning announcement 2" },
-    { src: "/posters/mobile/poster-3.jpg", alt: "Beside Learning announcement 3" },
+    { src: asset("/posters/mobile/poster-1.jpg"), alt: "Beside Learning announcement 1" },
+    { src: asset("/posters/mobile/poster-2.jpg"), alt: "Beside Learning announcement 2" },
+    { src: asset("/posters/mobile/poster-3.jpg"), alt: "Beside Learning announcement 3" },
   ],
   autoPlayMs: 4500,
 }
@@ -150,8 +154,8 @@ export const aboutPage = {
     sub: "The two faces every Beside student knows.",
     people: [
       // TODO: real names & subjects
-      { name: "Lead Mentor 1", role: "Name & subjects coming soon", photo: "/tutors/tutor-1.png" },
-      { name: "Lead Mentor 2", role: "Name & subjects coming soon", photo: "/tutors/tutor-2.png" },
+      { name: "Lead Mentor 1", role: "Name & subjects coming soon", photo: asset("/tutors/tutor-1.png") },
+      { name: "Lead Mentor 2", role: "Name & subjects coming soon", photo: asset("/tutors/tutor-2.png") },
     ],
   },
 }
