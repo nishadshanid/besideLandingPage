@@ -170,6 +170,23 @@ The build is already sub-path aware (assets, router and images all adapt), and
 with the real domain, nothing needs to change — the same repo deploys there
 with zero config.
 
+### Troubleshooting: "Multiple artifacts named github-pages were unexpectedly found"
+
+This means **two** things tried to deploy Pages on the same push. Almost always
+the fix is the Source setting:
+
+- **Settings → Pages → Build and deployment → Source → "GitHub Actions".**
+  If Source is "Deploy from a branch", GitHub *also* runs its own built-in
+  `pages-build-deployment` builder, which collides with this workflow. Switch
+  to "GitHub Actions" so only this workflow runs, then re-run it from the
+  **Actions** tab.
+- Also confirm `.github/workflows/` has no second Pages file (e.g. a
+  `static.yml` GitHub may have added from a UI template). This repo ships only
+  `deploy-pages.yml`; delete any other one.
+
+(The "Node.js 20 is deprecated" line in the logs is only a warning from
+GitHub's own actions and is safe to ignore — it does not fail the build.)
+
 ---
 
 ### Suggested roadmap

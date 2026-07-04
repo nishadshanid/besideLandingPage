@@ -1,5 +1,11 @@
 # Deploys the site to GitHub Pages on every push to main.
-# One-time setup after pushing: repo Settings → Pages → Source: "GitHub Actions".
+#
+# IMPORTANT one-time setup:
+#   1. Repo Settings → Pages → Source: "GitHub Actions".
+#   2. Make sure this is the ONLY workflow that deploys Pages. If you enabled
+#      Pages through the GitHub UI it may have added a second file such as
+#      static.yml or jekyll-gh-pages.yml — delete that one, or you'll get
+#      "Multiple artifacts named github-pages were unexpectedly found".
 name: Deploy demo to GitHub Pages
 
 on:
@@ -12,22 +18,20 @@ permissions:
   pages: write
   id-token: write
 
+# Only one Pages deployment at a time; cancel superseded runs.
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
@@ -40,11 +44,16 @@ jobs:
       # SPA fallback so /about (react-router) works on a direct visit/refresh
       - run: cp dist/index.html dist/404.html
 
-      - uses: actions/configure-pages@v5
-
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
