@@ -40,6 +40,30 @@ html {
   display: none;
 }
 
+/* seamless auto-scrolling marquee for the reels row.
+   The track renders its items twice; translating by -50% swaps the first
+   copy for the identical second copy, so it loops with no visible jump. */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+.marquee-viewport:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   color: #241333;
