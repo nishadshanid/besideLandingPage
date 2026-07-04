@@ -2,6 +2,46 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { nav } from '../data/content.js'
 
+function ThemeToggle({ className = '' }) {
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'))
+
+  // keep the desktop and mobile toggle instances in sync
+  useEffect(() => {
+    const sync = () => setDark(document.documentElement.classList.contains('dark'))
+    window.addEventListener('themechange', sync)
+    return () => window.removeEventListener('themechange', sync)
+  }, [])
+
+  const toggle = () => {
+    const el = document.documentElement
+    el.classList.toggle('dark')
+    localStorage.setItem('theme', el.classList.contains('dark') ? 'dark' : 'light')
+    window.dispatchEvent(new Event('themechange'))
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className={`flex h-10 w-10 items-center justify-center rounded-full border border-brand-100 text-brand-700 transition hover:bg-brand-50 ${className}`}
+    >
+      {dark ? (
+        // sun
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" />
+          <path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19" />
+        </svg>
+      ) : (
+        // moon
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" />
+        </svg>
+      )}
+    </button>
+  )
+}
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -23,7 +63,8 @@ export default function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
         {/* Logo */}
         <Link to="/" className="flex shrink-0 items-center" aria-label="Beside Learning — Home">
-          <img src="/logo-purple.png" alt="Beside" className="h-6 w-auto lg:h-8" />
+          <img src="/logo-purple.png" alt="Beside" className="h-6 w-auto lg:h-8 dark:hidden" />
+          <img src="/logo-white.png" alt="Beside" className="hidden h-6 w-auto lg:h-8 dark:block" />
         </Link>
 
         {/* Desktop nav */}
@@ -41,30 +82,36 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
-        <Link
-          to="/#register"
-          className="hidden rounded-full bg-brand-700 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-700/25 transition hover:bg-brand-800 lg:inline-block"
-        >
-          Register Now
-        </Link>
+        {/* Desktop CTA + theme toggle */}
+        <div className="hidden items-center gap-3 lg:flex">
+          <ThemeToggle />
+          <Link
+            to="/#register"
+            className="rounded-full bg-brand-700 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-700/25 transition hover:bg-brand-800"
+          >
+            Register Now
+          </Link>
+        </div>
 
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand-100 text-brand-700 lg:hidden"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            {open ? (
-              <path d="M6 6l12 12M18 6L6 18" />
-            ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            )}
-          </svg>
-        </button>
+        {/* Mobile: theme toggle + hamburger */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand-100 text-brand-700"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {open ? (
+                <path d="M6 6l12 12M18 6L6 18" />
+              ) : (
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer */}

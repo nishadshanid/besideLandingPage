@@ -22,8 +22,104 @@
   --color-accent-600: #e08e0b;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   scroll-behavior: smooth;
+}
+
+/* ───────────────────────── dark mode ─────────────────────────
+   The site uses a small set of surface/text/border utilities, so the
+   dark theme remaps them centrally here (kept out of the components).
+   Toggled via the .dark class on <html>; persisted in localStorage. */
+.dark {
+  color-scheme: dark;
+}
+.dark body {
+  background-color: #150b21;
+  color: #ece4f6;
+}
+
+/* surfaces */
+.dark .bg-white {
+  background-color: #231536;
+}
+.dark .bg-brand-50 {
+  background-color: #1a0f29;
+}
+.dark .bg-brand-100 {
+  background-color: #2c1c42;
+}
+.dark .bg-brand-200 {
+  background-color: #3b2559;
+}
+.dark .bg-white\/80 {
+  background-color: rgb(35 21 54 / 0.85);
+}
+.dark .bg-white\/90,
+.dark .bg-white\/95 {
+  background-color: rgb(26 15 41 / 0.92);
+}
+.dark .bg-brand-50\/50 {
+  background-color: rgb(26 15 41 / 0.5);
+}
+
+/* text */
+.dark .text-brand-900 {
+  color: #f2ebfa;
+}
+.dark .text-brand-800 {
+  color: #e2d5f1;
+}
+.dark .text-brand-700 {
+  color: #c9a6f0;
+}
+.dark .text-gray-700 {
+  color: #cfc2df;
+}
+.dark .text-gray-600 {
+  color: #b9abcb;
+}
+.dark .text-gray-500 {
+  color: #a293b6;
+}
+.dark .text-brand-400 {
+  color: #a684d1;
+}
+
+/* borders */
+.dark .border-brand-50 {
+  border-color: #2a1a3e;
+}
+.dark .border-brand-100 {
+  border-color: #35214d;
+}
+.dark .border-brand-200 {
+  border-color: #462b64;
+}
+
+/* hovers */
+.dark .hover\:bg-white:hover {
+  background-color: #2c1c42;
+}
+.dark .hover\:bg-brand-50:hover {
+  background-color: #2c1c42;
+}
+.dark .hover\:bg-brand-100:hover {
+  background-color: #3b2559;
+}
+.dark .hover\:border-brand-300:hover {
+  border-color: #57367c;
+}
+
+/* reels edge fades blend into the dark page */
+.dark .from-white {
+  --tw-gradient-from: #150b21;
+}
+
+/* hero dot decorations darken without touching the footer's light text */
+.dark #home .text-brand-200 {
+  color: #33204a;
 }
 
 /* keep anchored sections clear of the fixed header when jumped to */

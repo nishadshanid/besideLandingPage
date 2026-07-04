@@ -9,6 +9,13 @@
       name="description"
       content="Beside Learning is a tuition centre in Palarivattom, Kochi for classes 6 to 12 — CBSE, ICSE, IGCSE, IB, NIOS, A-Level & O-Level. Beyond lectures, Beside learners."
     />
+    <script>
+      // apply the saved theme before paint to avoid a light-mode flash
+      const saved = localStorage.getItem('theme')
+      if (saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
