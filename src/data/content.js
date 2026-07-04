@@ -35,12 +35,17 @@ export const boards = ["CBSE", "ICSE", "IGCSE", "IB", "NIOS", "A-Level", "O-Leve
 
 export const hero = {
   badge: "Admissions Open 2026–27",
-  // Headline is split so "Beside" gets the accent treatment
-  headlinePre: "Beyond Lectures,",
-  headlineAccent: "Beside",
-  headlinePost: "Learners",
+  headline1: "Personalised Learning.",
+  headline2: "Proven Results.",
   subcopy:
-    "Personalised tuition for classes 6 to 12 across CBSE, ICSE, IGCSE, IB, NIOS, A-Level and O-Level — right here in Palarivattom, Kochi.",
+    "Expert-led tuition for Classes 6 to 12 across CBSE, ICSE, IGCSE, IB, NIOS, A-Level and O-Level.",
+  features: [
+    { icon: "classes", label: "Classes 6 – 12" },
+    { icon: "person", label: "Personalised Attention" },
+    { icon: "chart", label: "Expert Mentors" },
+    { icon: "shield", label: "Proven Results" },
+  ],
+  coursesLabel: "Courses We Cover",
   // Transparent PNG cutouts of the two lead tutors (public/tutors/)
   tutors: [
     { src: "/tutors/tutor-1.png", alt: "Beside Learning lead tutor" },

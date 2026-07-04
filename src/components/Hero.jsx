@@ -8,13 +8,47 @@ function WhatsAppIcon({ className }) {
   )
 }
 
+const featureIcons = {
+  classes: (
+    <>
+      <path d="M12 3 1 8l11 5 9-4.09V14h2V8L12 3Z" fill="var(--color-brand-700)" stroke="none" />
+      <path d="M5 11.5V16c0 1.5 3.1 3 7 3s7-1.5 7-3v-4.5" />
+    </>
+  ),
+  person: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4.5 21c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5" />
+    </>
+  ),
+  chart: (
+    <>
+      <path d="M3 3v18h18" />
+      <path d="M8 16v-5M13 16V8M18 16v-3" strokeWidth="2.4" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M12 2 4 5.5V11c0 5 3.4 8.8 8 11 4.6-2.2 8-6 8-11V5.5L12 2Z" />
+      <path d="m8.5 11.5 2.5 2.5 4.5-5" />
+    </>
+  ),
+}
+
 /* The two lead tutors on a clean brand circle, per the front-view reference:
    heads break the circle's top edge, the circle's bottom is clipped by the
    composition edge, dotted accent pattern at the top right. */
 function TutorShowcase() {
   const [left, right] = hero.tutors
   return (
-    <div className="relative mx-auto w-full max-w-md overflow-hidden pt-10 lg:max-w-lg">
+    <div
+      className="relative mx-auto w-full max-w-md overflow-hidden pt-10 lg:max-w-lg"
+      style={{
+        // soft fade at the bottom so the clipped edge melts into the section
+        maskImage: 'linear-gradient(to bottom, black 86%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, black 86%, transparent 100%)',
+      }}
+    >
       {/* dotted accent pattern */}
       <svg className="absolute top-4 right-0 h-24 w-36 text-brand-200" aria-hidden="true">
         <defs>
@@ -31,18 +65,18 @@ function TutorShowcase() {
         className="absolute top-[13%] left-1/2 aspect-square w-[102%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_28%_18%,var(--color-brand-600),var(--color-brand-700)_55%,var(--color-brand-800))]"
       />
 
-      {/* tutors — bottom-anchored on the circle */}
+      {/* tutors — bottom-anchored on the circle, lifted for presence */}
       <div className="relative z-10 flex items-end justify-center">
         <img
           src={left.src}
           alt={left.alt}
-          className="-mr-9 w-[43%] drop-shadow-[0_20px_30px_rgba(46,14,72,0.45)] sm:-mr-11"
+          className="-mr-10 w-[46%] brightness-[1.04] saturate-[1.05] drop-shadow-[0_24px_36px_rgba(46,14,72,0.5)] sm:-mr-12"
           draggable="false"
         />
         <img
           src={right.src}
           alt={right.alt}
-          className="w-[54%] drop-shadow-[0_20px_30px_rgba(46,14,72,0.45)]"
+          className="w-[57%] brightness-[1.04] saturate-[1.05] drop-shadow-[0_24px_36px_rgba(46,14,72,0.5)]"
           draggable="false"
         />
       </div>
@@ -68,38 +102,28 @@ export default function Hero() {
               {hero.badge}
             </span>
 
-            <h1 className="mt-5 text-4xl leading-tight font-bold text-brand-900 sm:text-5xl lg:text-[3.4rem]">
-              {hero.headlinePre}
+            <h1 className="mt-5 text-4xl leading-tight font-bold sm:text-[2.6rem] lg:text-[2.75rem]">
+              <span className="text-brand-900">{hero.headline1}</span>
               <br />
-              <span className="relative inline-block text-brand-700">
-                {hero.headlineAccent}
-                {/* hand-drawn accent underline */}
-                <svg
-                  className="absolute -bottom-2 left-0 w-full"
-                  viewBox="0 0 200 12"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <path d="M3 9c50-7 130-7 194-3" stroke="var(--color-accent-400)" strokeWidth="5" strokeLinecap="round" />
-                </svg>
-              </span>{' '}
-              {hero.headlinePost}
+              <span className="text-brand-700">{hero.headline2}</span>
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-gray-600 lg:mx-0">
               {hero.subcopy}
             </p>
 
-            {/* board chips */}
-            <div className="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
-              {boards.map((b) => (
-                <span
-                  key={b}
-                  className="rounded-full border border-brand-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-brand-700"
+            {/* icon feature row */}
+            <div className="mt-8 grid grid-cols-2 gap-y-6 sm:flex sm:divide-x sm:divide-brand-200">
+              {hero.features.map((f) => (
+                <div
+                  key={f.label}
+                  className="flex flex-col items-center gap-2 text-center sm:max-w-28 sm:items-start sm:px-5 sm:text-left sm:first:pl-0 sm:last:pr-0"
                 >
-                  {b}
-                </span>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-700)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {featureIcons[f.icon]}
+                  </svg>
+                  <span className="text-xs leading-snug font-semibold text-brand-900">{f.label}</span>
+                </div>
               ))}
             </div>
 
@@ -120,6 +144,21 @@ export default function Hero() {
                 <WhatsAppIcon className="h-5 w-5 text-[#25D366]" />
                 WhatsApp Us
               </a>
+            </div>
+
+            {/* courses we cover */}
+            <div className="mt-9">
+              <div className="text-sm font-semibold text-brand-900">{hero.coursesLabel}</div>
+              <div className="mt-3 flex flex-wrap justify-center gap-2 lg:justify-start">
+                {boards.map((b) => (
+                  <span
+                    key={b}
+                    className="rounded-full border border-brand-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-brand-700"
+                  >
+                    {b}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
