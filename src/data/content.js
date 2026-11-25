@@ -208,6 +208,9 @@ export const whyBeside = {
 // Instagram reels shown in the video row. Paste full reel URLs here —
 // the embed link is derived automatically, and the row repeats them in a
 // seamless auto-scrolling loop (no need to add duplicates).
+// For a much lighter page, give a reel a cover image instead of the live
+// embed: drop a 9:16 image (e.g. 540x960 .jpg) into public/reels/ and write
+//   { url: "https://www.instagram.com/reel/XXXX/", thumb: asset("/reels/reel-1.jpg") }
 export const reels = {
   handle: "@beside.education",
   videos: [

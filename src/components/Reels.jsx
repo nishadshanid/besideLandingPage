@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { reels } from '../data/content.js'
 
 // "https://www.instagram.com/reel/ABC123/?igsh=x" -> "https://www.instagram.com/reel/ABC123/embed/"
@@ -6,6 +6,9 @@ function embedUrl(url) {
   const path = new URL(url).pathname.replace(/\/?$/, '/')
   return `https://www.instagram.com${path}embed/`
 }
+
+// content.js entries are either a reel URL string or { url, thumb }
+const toReel = (v) => (typeof v === 'string' ? { url: v } : v)
 
 function InstagramIcon({ className }) {
   return (
@@ -17,28 +20,42 @@ function InstagramIcon({ className }) {
   )
 }
 
-function ReelCard({ url, index }) {
+function ReelCard({ reel, index, live }) {
   return (
     <a
-      href={url}
+      href={reel.url}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Watch Beside Learning reel ${index + 1} on Instagram`}
-      className="group/reel relative aspect-[9/16] w-44 shrink-0 overflow-hidden rounded-2xl border border-brand-100 bg-black shadow-sm transition hover:shadow-xl hover:shadow-brand-900/20 sm:w-52"
+      className="group/reel relative aspect-[9/16] w-44 shrink-0 overflow-hidden rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-800 to-brand-600 shadow-sm transition hover:shadow-xl hover:shadow-brand-900/20 sm:w-52"
     >
-      {/* Embed cropped to just the video: the profile header is shifted up out
-          of view, the footer overflows the bottom, and the iframe is widened
-          so the 9:16 video fills the card and IG's black side bars fall
-          outside it. Display-only — the card links to the reel. */}
-      <iframe
-        src={embedUrl(url)}
-        title={`Beside Learning reel ${index + 1}`}
-        loading="lazy"
-        scrolling="no"
-        tabIndex={-1}
-        className="pointer-events-none absolute border-0"
-        style={{ top: '-54px', left: '-23%', width: '146%', height: 'calc(190% + 60px)' }}
-      />
+      {reel.thumb ? (
+        // A still cover image is far cheaper than an embed — prefer it.
+        <img
+          src={reel.thumb}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable="false"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        live && (
+          /* Embed cropped to just the video: the profile header is shifted up
+             out of view, the footer overflows the bottom, and the iframe is
+             widened so the 9:16 video fills the card and IG's black side bars
+             fall outside it. Display-only — the card links to the reel. */
+          <iframe
+            src={embedUrl(reel.url)}
+            title={`Beside Learning reel ${index + 1}`}
+            loading="lazy"
+            scrolling="no"
+            tabIndex={-1}
+            className="pointer-events-none absolute border-0 bg-black"
+            style={{ top: '-54px', left: '-23%', width: '146%', height: 'calc(190% + 60px)' }}
+          />
+        )
+      )}
       <span className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm">
         <InstagramIcon className="h-4 w-4" />
       </span>
@@ -54,20 +71,43 @@ function ReelCard({ url, index }) {
 }
 
 export default function Reels() {
-  const vids = [...new Set(reels.videos)]
+  const vids = [...new Map(reels.videos.map(toReel).map((r) => [r.url, r])).values()]
 
-  // One "set" must be wider than the viewport, otherwise translating by a
-  // set-width (the -50% loop) exposes blank track on wide screens. Repeat the
-  // reels enough times to always over-fill the widest expected screen, then
-  // render that set twice so the -50% translate loops seamlessly.
-  const [reps, setReps] = useState(3)
+  // Embeds are only created once the section gets near the viewport (and kept
+  // after that, so they don't reload), and the marquee is paused whenever the
+  // section is off screen.
+  const sectionRef = useRef(null)
+  const [live, setLive] = useState(false)
+  const [onScreen, setOnScreen] = useState(false)
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el || !('IntersectionObserver' in window)) {
+      setLive(true)
+      setOnScreen(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setOnScreen(entry.isIntersecting)
+        if (entry.isIntersecting) setLive(true)
+      },
+      { rootMargin: '400px 0px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  // One "set" must be at least as wide as the viewport, otherwise translating
+  // by a set-width (the -50% loop) exposes blank track on wide screens. Repeat
+  // the reels only as many times as needed, then render that set twice so the
+  // -50% translate loops seamlessly.
+  const [reps, setReps] = useState(1)
   useEffect(() => {
     const compute = () => {
       const cardW = window.matchMedia('(min-width: 640px)').matches ? 208 + 16 : 176 + 16
       const setW = vids.length * cardW
-      // one set (reps × unique) must be at least the viewport width so the
-      // -50% loop never exposes blank track; keep a small safety margin
-      setReps(Math.max(2, Math.ceil((window.innerWidth + 64) / setW)))
+      // keep a small safety margin beyond the viewport width
+      setReps(Math.max(1, Math.ceil((window.innerWidth + 64) / setW)))
     }
     compute()
     window.addEventListener('resize', compute)
@@ -79,7 +119,7 @@ export default function Reels() {
   const duration = `${base.length * 7}s`
 
   return (
-    <section id="reels" className="overflow-hidden bg-white">
+    <section id="reels" ref={sectionRef} className="overflow-hidden bg-white">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-xs font-semibold tracking-widest text-accent-600 uppercase">
@@ -92,15 +132,21 @@ export default function Reels() {
         </div>
       </div>
 
-      {/* full-bleed auto-scrolling marquee; pauses on hover */}
+      {/* full-bleed auto-scrolling marquee; pauses on hover and off screen */}
       <div className="marquee-viewport relative w-full overflow-hidden pb-16 lg:pb-24">
         {/* edge fades */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-28" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-28" />
 
-        <div className="marquee-track flex w-max gap-4" style={{ '--marquee-duration': duration }}>
-          {loop.map((url, i) => (
-            <ReelCard key={`${url}-${i}`} url={url} index={i % vids.length} />
+        <div
+          className="marquee-track flex w-max gap-4"
+          style={{
+            '--marquee-duration': duration,
+            ...(onScreen ? null : { animationPlayState: 'paused' }),
+          }}
+        >
+          {loop.map((reel, i) => (
+            <ReelCard key={`${reel.url}-${i}`} reel={reel} index={i % vids.length} live={live} />
           ))}
         </div>
       </div>
