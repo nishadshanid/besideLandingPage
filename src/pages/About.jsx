@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { aboutPage, boards, brand, contact } from '../data/content.js'
 
 function MentorCard({ person }) {
@@ -153,12 +154,12 @@ export default function About() {
               </p>
             </div>
             <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-              <a
-                href="/#register"
+              <Link
+                to="/#register"
                 className="rounded-full bg-accent-500 px-8 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-accent-600/30 transition hover:bg-accent-600"
               >
                 Register Now
-              </a>
+              </Link>
               <a
                 href={contact.mapsUrl}
                 target="_blank"
