@@ -19,7 +19,7 @@ export const brand = {
 export const contact = {
   phone: "+91 99886 06602",
   whatsapp: "919988606602", // digits only, with country code
-  email: "hello@besidelearning.com",
+  email: "info@besideeducation.com",
   mapsUrl: "https://maps.google.com/?q=Pratheeksha+Building+Palarivattom+Kochi",
   instagram: "https://www.instagram.com/beside.education",
   youtube: "https://youtube.com/@besidelearning", // TODO: real channel
