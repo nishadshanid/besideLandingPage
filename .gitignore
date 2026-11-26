@@ -2,3 +2,7 @@ node_modules/
 dist/
 .DS_Store
 *.local
+
+# Cloudflare local dev secrets / state
+.dev.vars
+.wrangler/
