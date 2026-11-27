@@ -32,6 +32,6 @@ export default defineConfig({
   },
   server: {
     // `npm run dev:api` serves the Functions on :8788
-    proxy: { '/api': 'http://localhost:8788' },
+    proxy: { '/api': 'http://localhost:8788', '/lead': 'http://localhost:8788' },
   },
 })

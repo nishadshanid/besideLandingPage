@@ -1,4 +1,5 @@
 import { brand, contact } from '../data/content.js'
+import { trackClick } from '../lib/track.js'
 
 export default function FloatingButtons() {
   return (
@@ -19,6 +20,7 @@ export default function FloatingButtons() {
         href={`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(`Hi ${brand.fullName}! I'd like to know more about your tuition programs.`)}`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackClick('floating')}
         aria-label={`Chat with ${brand.fullName} on WhatsApp`}
         className="fixed right-5 bottom-5 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl shadow-[#25D366]/40 transition hover:scale-110 hover:bg-[#1fb857]"
       >

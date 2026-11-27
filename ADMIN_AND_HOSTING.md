@@ -32,6 +32,34 @@ Instagram player, which makes the home page faster.
 If two admins edit at once, the second one to publish is asked to reload — no
 one's work is silently overwritten.
 
+## Enquiries (Register form + WhatsApp buttons)
+
+When a visitor sends the **Register** form, WhatsApp opens as before and the
+details (name, phone, class, board, message) are also saved:
+
+- in the admin page → **Enquiries** (first item in the sidebar): mark each one
+  *New / Contacted / Joined / Not interested*, add notes, call or reply on
+  WhatsApp, search, **Download CSV**, delete;
+- as a new row in the **Google Sheet** (if connected).
+
+Clicks on the "Chat on WhatsApp" buttons (top of page, floating button, contact
+box) are only **counted** per day — those buttons don't ask for a name or number.
+
+Spam protection: hidden bot field, minimum time on page, max 5 form sends per
+visitor per hour, and the same phone number within 30 minutes is saved once.
+Visitor IP addresses are never stored (only a salted hash for the hourly limit).
+
+Setup (once):
+1. Cloudflare → **Storage & databases → D1 → Create** a database named `beside`.
+2. **Workers & Pages → besidelandingpage → Settings → Bindings → Add → D1
+   database**: variable name `DB`, database `beside`. Tables are created
+   automatically on first use.
+3. Google Sheet (optional): follow the steps at the top of
+   `docs/google-sheet-script.gs`, then add Production secrets
+   `SHEET_WEBHOOK_URL` (the web-app URL) and `SHEET_SECRET` (same text as in the
+   script).
+4. **Deployments → Retry deployment**.
+
 ## Adding or removing an admin
 
 Both lists must contain the email:

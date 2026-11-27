@@ -3,6 +3,7 @@ import { schema, sections, validate, imagePaths } from '../../shared/schema.js'
 import { api, ApiError, waitForLive } from './api.js'
 import { prepareImage, blobToBase64, newUploadPath } from './images.js'
 import { Field } from './Fields.jsx'
+import Enquiries from './Enquiries.jsx'
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '')
 const LOGOUT = '/cdn-cgi/access/logout'
@@ -119,7 +120,7 @@ export default function App() {
   const [draft, setDraft] = useState(null)
   const [sha, setSha] = useState(null)
   const [errors, setErrors] = useState({})
-  const [view, setView] = useState(sections[0].id) // section id or 'history'
+  const [view, setView] = useState('enquiries') // 'enquiries', a section id, or 'history'
   const [status, setStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [historyKey, setHistoryKey] = useState(0)
@@ -345,14 +346,16 @@ export default function App() {
               Discard changes
             </button>
           )}
-          <button
-            type="button"
-            onClick={publish}
-            disabled={busy || !dirty}
-            className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 disabled:cursor-not-allowed disabled:bg-gray-300"
-          >
-            {busy ? 'Working…' : dirty ? 'Publish' : 'Published'}
-          </button>
+          {(view !== 'enquiries' || dirty) && (
+            <button
+              type="button"
+              onClick={publish}
+              disabled={busy || !dirty}
+              className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+            >
+              {busy ? 'Working…' : dirty ? 'Publish' : 'Published'}
+            </button>
+          )}
           <a href={LOGOUT} className="hidden text-sm text-gray-500 hover:text-gray-800 sm:block">
             Sign out
           </a>
@@ -362,6 +365,12 @@ export default function App() {
       <div className="mx-auto flex max-w-6xl gap-6 px-4 py-6">
         <nav className="hidden w-52 shrink-0 md:block" aria-label="Sections">
           <ul className="sticky top-20 space-y-1">
+            <li className="pb-3">
+              <button type="button" onClick={() => go('enquiries')} className={navBtn(view === 'enquiries')}>
+                Enquiries
+              </button>
+            </li>
+            <li className="px-3 pb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">Website content</li>
             {sections.map((s) => (
               <li key={s.id}>
                 <button type="button" onClick={() => go(s.id)} className={navBtn(view === s.id)}>
@@ -389,6 +398,7 @@ export default function App() {
               onChange={(e) => go(e.target.value)}
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
             >
+              <option value="enquiries">Enquiries</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.title}
@@ -412,14 +422,19 @@ export default function App() {
           </div>
 
           <StatusBar status={status} onDismiss={() => setStatus(null)} />
-          {errorCount > 0 && view !== 'history' && !current?.keys.some((k) => Object.keys(errors).some((p) => topKey(p) === k)) && (
+          {errorCount > 0 && current && !current?.keys.some((k) => Object.keys(errors).some((p) => topKey(p) === k)) && (
             <p className="mb-4 text-sm text-red-600">
               Fields in other sections need fixing:{' '}
               {[...new Set(Object.keys(errors).map((p) => sectionOf(topKey(p))?.title).filter(Boolean))].join(', ')}
             </p>
           )}
 
-          {view === 'history' ? (
+          {view === 'enquiries' ? (
+            <>
+              <h2 className="mb-4 text-xl font-semibold text-gray-900">Enquiries</h2>
+              <Enquiries />
+            </>
+          ) : view === 'history' ? (
             <>
               <h2 className="mb-4 text-xl font-semibold text-gray-900">History</h2>
               <History key={historyKey} busy={busy} onRestore={restore} />

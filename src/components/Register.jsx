@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { boards, brand, contact } from '../data/content.js'
+import { logEnquiry, trackClick } from '../lib/track.js'
 
 const classes = ['6', '7', '8', '9', '10', '11', '12']
 
@@ -7,10 +8,11 @@ const inputCls =
   'w-full rounded-xl border-0 bg-white px-4 py-3 text-sm text-brand-900 placeholder-gray-400 shadow-sm outline-none focus:ring-2 focus:ring-accent-400'
 const labelCls = 'mb-1.5 block text-xs font-semibold tracking-wide text-brand-100'
 
-function ContactRow({ href, children, label }) {
+function ContactRow({ href, children, label, onClick }) {
   return (
     <a
       href={href}
+      onClick={onClick}
       target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
       className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm font-medium text-white backdrop-blur transition hover:bg-white/20"
@@ -23,6 +25,7 @@ function ContactRow({ href, children, label }) {
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', phone: '', klass: '', board: '', message: '' })
+  const [website, setWebsite] = useState('') // hidden; only bots fill it
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
 
   const onSubmit = (e) => {
@@ -37,7 +40,9 @@ export default function Register() {
       form.message && `Message: ${form.message}`,
     ].filter(Boolean)
     const url = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(lines.join('\n'))}`
+    // open WhatsApp first, while still inside the click (popup blockers)
     window.open(url, '_blank', 'noopener,noreferrer')
+    logEnquiry({ ...form, website, elapsedMs: Math.round(performance.now()) /* time on the page */ })
   }
 
   return (
@@ -75,6 +80,7 @@ export default function Register() {
                   </ContactRow>
                   <ContactRow
                     href={`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(`Hi ${brand.fullName}! I'd like to know more about your tuition programs.`)}`}
+                    onClick={() => trackClick('contact')}
                     label="Chat on WhatsApp"
                   >
                     <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px] shrink-0 text-[#25D366]" aria-hidden="true">
@@ -109,6 +115,11 @@ export default function Register() {
               onSubmit={onSubmit}
               className="border-t border-white/15 bg-white/5 p-8 backdrop-blur sm:p-10 lg:border-t-0 lg:border-l"
             >
+              {/* honeypot: hidden from people, bots tend to fill it */}
+              <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+                <label htmlFor="reg-website">Website</label>
+                <input id="reg-website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+              </div>
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="reg-name" className={labelCls}>
@@ -180,8 +191,8 @@ export default function Register() {
                 </svg>
               </button>
               <p className="mt-4 text-xs leading-relaxed text-brand-200">
-                Submitting opens WhatsApp with your details pre-filled — nothing is sent until you
-                press send there.
+                Submitting opens WhatsApp with your details pre-filled. We also save your name and
+                number so our team can call you back about admissions.
               </p>
             </form>
           </div>

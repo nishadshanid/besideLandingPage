@@ -1,4 +1,5 @@
 import { boards, contact, hero, stats } from '../data/content.js'
+import { trackClick } from '../lib/track.js'
 
 function WhatsAppIcon({ className }) {
   return (
@@ -91,6 +92,7 @@ export default function Hero() {
               href={`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent('Hi Beside Learning! I would like to know more about your tuition programs.')}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackClick('hero')}
               className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-brand-200 bg-white px-9 py-3.5 text-sm font-semibold text-brand-800 transition hover:border-brand-300 hover:bg-brand-50 sm:w-auto"
             >
               <WhatsAppIcon className="h-5 w-5 text-[#25D366]" />

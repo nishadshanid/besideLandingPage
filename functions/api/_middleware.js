@@ -10,7 +10,9 @@ export async function onRequest(ctx) {
     const who = await identify(request, env)
     if (who.error) return fail(who.status, who.error)
 
-    if (!env.GITHUB_TOKEN || !env.GITHUB_REPO) return fail(503, 'Publishing is not configured yet.')
+    // content routes publish through GitHub; the enquiry log only needs the database
+    const usesGitHub = !new URL(request.url).pathname.startsWith('/api/enquiries')
+    if (usesGitHub && (!env.GITHUB_TOKEN || !env.GITHUB_REPO)) return fail(503, 'Publishing is not configured yet.')
 
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       const origin = request.headers.get('Origin')
@@ -23,7 +25,8 @@ export async function onRequest(ctx) {
     return await ctx.next()
   } catch (e) {
     console.error(e)
-    const status = e.status === 409 ? 409 : 502
-    return fail(status, status === 409 ? 'conflict' : 'Could not reach GitHub. Please try again.')
+    if (e.status === 409) return fail(409, 'conflict')
+    if (e.status === 503) return fail(503, e.message)
+    return fail(502, 'Something went wrong on the server. Please try again.')
   }
 }

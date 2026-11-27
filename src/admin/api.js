@@ -39,6 +39,9 @@ export const api = {
   upload: (base64, type) => request('POST', `upload?type=${type}`, base64, { raw: true }),
   history: () => request('GET', 'history'),
   revert: (commit) => request('POST', 'revert', { commit }),
+  enquiries: () => request('GET', 'enquiries'),
+  updateEnquiry: (id, patch) => request('PATCH', 'enquiries', { id, ...patch }),
+  deleteEnquiry: (id) => request('DELETE', `enquiries?id=${id}`),
 }
 
 // Resolves when the public site is serving `commit` (Cloudflare finished building).
